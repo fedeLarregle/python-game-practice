@@ -21,9 +21,9 @@ class Game:
 	def run(self):
 		done = False
 		main_surface = pygame.display.set_mode((self.SURFACE_WIDTH, self.SURFACE_HEIGHT))
+		clock = pygame.time.Clock()
 
 		while not done:
-			time_start = pygame.time.get_ticks()
 
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
@@ -33,16 +33,12 @@ class Game:
 				if event.type == pygame.KEYDOWN:
 					if event.key == pygame.K_DOWN:
 						self.key_down = True
-						self.player.move_down()
 					if event.key == pygame.K_UP:
 						self.key_up = True
-						self.player.move_up()
 					if event.key == pygame.K_RIGHT:
 						self.key_right = True
-						self.player.move_right()
 					if event.key == pygame.K_LEFT:
 						self.key_left = True
-						self.player.move_left()
 				elif event.type == pygame.KEYUP:
 					if event.key == pygame.K_DOWN:
 						self.key_down = False
@@ -53,9 +49,20 @@ class Game:
 					if event.key == pygame.K_RIGHT:
 						self.key_right = False
 
-				main_surface.fill(self.BACKGROUND_COLOR)
-				pygame.draw.rect(main_surface, self.player.color, (self.player.position.x, self.player.position.y, 25, 25))
-				pygame.display.flip()
+			if self.key_up:
+				self.player.move_up()
+			if self.key_down:
+				self.player.move_down()
+			if self.key_right:
+				self.player.move_right()
+			if self.key_left:
+				self.player.move_left()
+
+			main_surface.fill(self.BACKGROUND_COLOR)
+			pygame.draw.rect(main_surface, self.player.color, (self.player.position.x, self.player.position.y, 25, 25))
+			pygame.display.flip()
+			
+			clock.tick(30)
 
 start_position = Vector(480 // 2, 480 // 2)
 player = Player(start_position)
