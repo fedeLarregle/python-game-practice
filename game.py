@@ -12,6 +12,7 @@ class Game:
 
 	def __init__(self, player):
 		pygame.init()
+		self.enemy = Enemy(Vector(480 // 2, 50))
 		self.player = player
 		self.key_up = False
 		self.key_down = False
@@ -60,11 +61,14 @@ class Game:
 				if not Collisions.check_right_wall(self.player, self.SURFACE_WIDTH):
 					self.player.move_right()
 			if self.key_left:
-				if not Collisions.check_left_wall(self.player, self.SURFACE_WIDTH):
+				if not Collisions.check_left_wall(self.player):
 					self.player.move_left()
+			if Collisions.check_player_enemy_collision(self.player, self.enemy):
+				print("Enemy player collision")
 
 			main_surface.fill(self.BACKGROUND_COLOR)
 			pygame.draw.circle(main_surface, self.player.color, (self.player.position.x, self.player.position.y), self.player.width)
+			pygame.draw.circle(main_surface, self.enemy.color, (self.enemy.position.x, self.enemy.position.y), self.enemy.width)
 			pygame.display.flip()
 			
 			clock.tick(30)

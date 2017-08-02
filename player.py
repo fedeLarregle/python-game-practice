@@ -2,7 +2,8 @@ from vector import Vector
 
 class Player:
 
-	def __init__(self, start_position):
+	def __init__(self, start_position: Vector):
+		self.health = 100
 		self.width = 20
 		self.height = 20
 		self.position = start_position
