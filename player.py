@@ -3,6 +3,8 @@ from vector import Vector
 class Player:
 
 	def __init__(self, start_position):
+		self.width = 20
+		self.height = 20
 		self.position = start_position
 		self.color = (255, 255, 255)
 
