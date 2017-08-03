@@ -1,13 +1,13 @@
+from entity import Entity
 from vector import Vector
 
-class Player:
+class Player(Entity):
 
 	def __init__(self, start_position: Vector):
-		self.health = 100
+		super(self.__class__, self).__init__(start_position, 100, (255, 255, 255))
+		self.bullets = []
 		self.width = 20
 		self.height = 20
-		self.position = start_position
-		self.color = (255, 255, 255)
 
 	def move_down(self):
 		v2 = Vector(0, 4)

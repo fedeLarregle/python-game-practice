@@ -51,6 +51,22 @@ class Game:
 					if event.key == pygame.K_RIGHT:
 						self.key_right = False
 
+			# Checking if our enemy is colliding with any wall
+			# in that case we invert the direction of our enemy
+			if Collisions.check_left_wall(self.enemy):
+				self.enemy.delta_vector.x = -self.enemy.delta_vector.x
+
+			if  Collisions.check_right_wall(self.enemy, self.SURFACE_WIDTH):
+				self.enemy.delta_vector.x = -self.enemy.delta_vector.x
+
+			if Collisions.check_bottom_wall(self.enemy, self.SURFACE_HEIGHT):
+				self.enemy.delta_vector.y = -self.enemy.delta_vector.y
+
+			if Collisions.check_top_wall(self.enemy):
+				self.enemy.delta_vector.y = -self.enemy.delta_vector.y
+
+			# Checking if our player is trying to go out of the window
+			# in that case we don't allow it...
 			if self.key_up:
 				if not Collisions.check_top_wall(self.player):
 					self.player.move_up()
@@ -63,18 +79,19 @@ class Game:
 			if self.key_left:
 				if not Collisions.check_left_wall(self.player):
 					self.player.move_left()
+			# Checking the our player and enemy are colliding
 			if Collisions.check_player_enemy_collision(self.player, self.enemy):
 				print("Enemy player collision")
 
 			main_surface.fill(self.BACKGROUND_COLOR)
 			pygame.draw.circle(main_surface, self.player.color, (self.player.position.x, self.player.position.y), self.player.width)
 			pygame.draw.circle(main_surface, self.enemy.color, (self.enemy.position.x, self.enemy.position.y), self.enemy.width)
+			self.enemy.update_position()
 			pygame.display.flip()
 			
 			clock.tick(30)
 
-start_position = Vector(480 // 2, 600 // 2)
-player = Player(start_position)
+player = Player(Vector(480 // 2, 600 // 2))
 game = Game(player)
 game.run()
 
