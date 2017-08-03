@@ -25,3 +25,4 @@ class Player(Entity):
 		v2 = Vector(-4, 0)
 		self.position.add(v2)
 
+
