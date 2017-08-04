@@ -1,8 +1,9 @@
 import pygame, sys
-from pygame.locals import *
 from bullet import Bullet
 from collision import *
 from player import Player
+
+from pygame.locals import *
 from vector import Vector
 
 class Game:
@@ -13,6 +14,7 @@ class Game:
 
 	def __init__(self, player):
 		pygame.init()
+		self.game_font = pygame.font.SysFont("monospace", 15)
 		self.enemies = [Enemy(Vector(480 // 2, 50)) for x in range(5)]
 		self.player = player
 		self.key_z = False
@@ -30,7 +32,8 @@ class Game:
 		while not done:
 
 			for event in pygame.event.get():
-				if event.type == pygame.QUIT:
+				# I know... we need to do something else than 'sys.exit()' when the player's health goes down to 0...
+				if event.type == pygame.QUIT or self.player.health == 0:
 					pygame.quit()
 					sys.exit()
 
@@ -73,7 +76,7 @@ class Game:
 					enemy.delta_vector.y = -enemy.delta_vector.y
 				# Checking the our player and enemy are colliding
 				if Collisions.check_player_enemy_collision(self.player, enemy):
-					print("Enemy player collision")
+					self.player.health -= 1
 
 			# Checking if our player is trying to go out of the window
 			# in that case we don't allow it...
@@ -104,14 +107,15 @@ class Game:
 				pygame.draw.circle(main_surface, b.color, (b.position.x, b.position.y), b.width)
 
 			# remove bullets that have gone away
-			for b in self.player.bullets:
-				if Collisions.check_top_wall(b):
-					self.player.bullets.pop(self.player.bullets.index(b))
+			self.player.bullets = [b for b in self.player.bullets if not Collisions.check_top_wall(b)]
 
 			# remove all the bullets that have hit an enemy
 			for e in self.enemies:
 				self.player.bullets = [b for b in self.player.bullets if not Collisions.check_circle_circle_collision(b, e)]
 
+			# player health to be render onto the main_surface
+			health_info = self.game_font.render(''.join(["Player health: ", str(self.player.health)]), 1, (255, 255, 255))
+			main_surface.blit(health_info, (self.SURFACE_WIDTH // 8, self.SURFACE_HEIGHT // 14))
 			pygame.display.flip()
 			clock.tick(30)
 
