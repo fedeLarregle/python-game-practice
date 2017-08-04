@@ -1,3 +1,4 @@
+from bullet import Bullet
 from entity import Entity
 from vector import Vector
 
@@ -25,4 +26,6 @@ class Player(Entity):
 		v2 = Vector(-4, 0)
 		self.position.add(v2)
 
+	def add_bullet(self):
+		self.bullets.append(Bullet(self))
 

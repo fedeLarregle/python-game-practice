@@ -15,7 +15,7 @@ class Collisions:
 			return True
 
 	@staticmethod
-	def check_top_wall(entity: Entity):
+	def check_top_wall(entity):
 		if (entity.position.y - entity.height) <= 0:
 			return True
 
@@ -25,9 +25,15 @@ class Collisions:
 			return True
 
 	@staticmethod
-	def check_player_enemy_collision(player: Player, enemy: Enemy):
-		x_dif = player.position.x - enemy.position.x
-		y_dif = player.position.y - enemy.position.y
+	def check_circle_circle_collision(circle1, circle2):
+		x_dif = circle1.position.x - circle2.position.x
+		y_dif = circle1.position.y - circle2.position.y
 		square_distance = (x_dif * x_dif) + (y_dif * y_dif)
 		
-		return (square_distance <= ( (player.width + enemy.width) * (player.width + enemy.width) ))
+		return (square_distance <= ( (circle1.width + circle2.width) * (circle1.width + circle2.width) ))
+
+	@staticmethod
+	def check_player_enemy_collision(player: Player, enemy: Enemy):
+		return Collisions.check_circle_circle_collision(player, enemy)
+
+

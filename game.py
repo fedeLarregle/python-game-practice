@@ -1,5 +1,6 @@
 import pygame, sys
 from pygame.locals import *
+from bullet import Bullet
 from collision import *
 from player import Player
 from vector import Vector
@@ -12,8 +13,9 @@ class Game:
 
 	def __init__(self, player):
 		pygame.init()
-		self.enemies = [Enemy(Enemy(Vector(480 // 2, 50))) for x in range(5)]
+		self.enemies = [Enemy(Vector(480 // 2, 50)) for x in range(5)]
 		self.player = player
+		self.key_z = False
 		self.key_up = False
 		self.key_down = False
 		self.key_left = False
@@ -41,6 +43,8 @@ class Game:
 						self.key_right = True
 					if event.key == pygame.K_LEFT:
 						self.key_left = True
+					if event.key == pygame.K_z:
+						self.key_z = True
 				elif event.type == pygame.KEYUP:
 					if event.key == pygame.K_DOWN:
 						self.key_down = False
@@ -50,6 +54,9 @@ class Game:
 						self.key_left = False
 					if event.key == pygame.K_RIGHT:
 						self.key_right = False
+					if event.key == pygame.K_z:
+						self.key_z = False
+
 			for enemy in self.enemies:
 				# Checking if our enemy is colliding with any wall
 				# in that case we invert the direction of our enemy
@@ -82,13 +89,27 @@ class Game:
 			if self.key_left:
 				if not Collisions.check_left_wall(self.player):
 					self.player.move_left()
-			
+			if self.key_z:
+				self.player.add_bullet()
+				self.key_z = False
 
 			main_surface.fill(self.BACKGROUND_COLOR)
 			pygame.draw.circle(main_surface, self.player.color, (self.player.position.x, self.player.position.y), self.player.width)
 			for enemy in self.enemies:
 				pygame.draw.circle(main_surface, enemy.color, (enemy.position.x, enemy.position.y), enemy.width)
 				enemy.update_position()
+
+			for b in self.player.bullets:
+				b.shoot()
+				pygame.draw.circle(main_surface, b.color, (b.position.x, b.position.y), b.width)
+
+			# log count bullets
+			print(len(self.player.bullets))
+			# checking for removable bullets
+			for b in self.player.bullets:
+				if Collisions.check_top_wall(b):
+					self.player.bullets.pop(self.player.bullets.index(b))
+
 			pygame.display.flip()
 			
 			clock.tick(30)
