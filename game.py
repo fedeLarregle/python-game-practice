@@ -103,15 +103,16 @@ class Game:
 				b.shoot()
 				pygame.draw.circle(main_surface, b.color, (b.position.x, b.position.y), b.width)
 
-			# log count bullets
-			print(len(self.player.bullets))
-			# checking for removable bullets
+			# remove bullets that have gone away
 			for b in self.player.bullets:
 				if Collisions.check_top_wall(b):
 					self.player.bullets.pop(self.player.bullets.index(b))
 
+			# remove all the bullets that have hit an enemy
+			for e in self.enemies:
+				self.player.bullets = [b for b in self.player.bullets if not Collisions.check_circle_circle_collision(b, e)]
+
 			pygame.display.flip()
-			
 			clock.tick(30)
 
 player = Player(Vector(480 // 2, 600 // 2))

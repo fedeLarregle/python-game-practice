@@ -6,7 +6,7 @@ class Bullet:
 	def __init__(self, entity: Entity):
 		self.entity = entity
 		self.position = Vector(self.entity.position.x, self.entity.position.y)
-		self.color = (128, 128, 128)
+		self.color = (255, 255, 0)
 		self.width = 10
 		self.height = 10
 
