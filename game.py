@@ -33,7 +33,7 @@ class Game:
 
 			for event in pygame.event.get():
 				# I know... we need to do something else than 'sys.exit()' when the player's health goes down to 0...
-				if event.type == pygame.QUIT or self.player.health == 0:
+				if event.type == pygame.QUIT or self.player.health <= 0:
 					pygame.quit()
 					sys.exit()
 
@@ -110,9 +110,16 @@ class Game:
 			self.player.bullets = [b for b in self.player.bullets if not Collisions.check_top_wall(b)]
 
 			# remove all the bullets that have hit an enemy
-			for e in self.enemies:
-				self.player.bullets = [b for b in self.player.bullets if not Collisions.check_circle_circle_collision(b, e)]
-
+			# and if it has hit an enemy, reduce that enemy's life
+			i = 0
+			while i < len(self.player.bullets):
+				for e in self.enemies:
+					if i < len(self.player.bullets) and Collisions.check_circle_circle_collision(self.player.bullets[i], e):
+						del self.player.bullets[i]
+						e.health -= 10
+				i += 1
+			# remove all the enemies that have a health less or equal to 0
+			self.enemies = [e for e in self.enemies if not e.health <= 0]
 			# player health to be render onto the main_surface
 			health_info = self.game_font.render(''.join(["Player health: ", str(self.player.health)]), 1, (255, 255, 255))
 			main_surface.blit(health_info, (self.SURFACE_WIDTH // 8, self.SURFACE_HEIGHT // 14))
