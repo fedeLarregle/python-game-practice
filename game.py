@@ -117,12 +117,16 @@ class Game:
 					if i < len(self.player.bullets) and Collisions.check_circle_circle_collision(self.player.bullets[i], e):
 						del self.player.bullets[i]
 						e.health -= 10
+						self.player.points += 10
 				i += 1
 			# remove all the enemies that have a health less or equal to 0
 			self.enemies = [e for e in self.enemies if not e.health <= 0]
 			# player health to be render onto the main_surface
 			health_info = self.game_font.render(''.join(["Player health: ", str(self.player.health)]), 1, (255, 255, 255))
-			main_surface.blit(health_info, (self.SURFACE_WIDTH // 8, self.SURFACE_HEIGHT // 14))
+			main_surface.blit(health_info, (self.SURFACE_WIDTH // 10, self.SURFACE_HEIGHT // 14))
+			# player points to be render onto the main_surface
+			points_info = self.game_font.render(''.join(["Player points: ", str(self.player.points)]), 1, (255, 255, 255))
+			main_surface.blit(points_info, ((self.SURFACE_WIDTH // 2) + self.SURFACE_WIDTH // 7, self.SURFACE_HEIGHT // 14))
 			pygame.display.flip()
 			clock.tick(30)
 

@@ -7,6 +7,7 @@ class Player(Entity):
 	def __init__(self, start_position: Vector):
 		super(self.__class__, self).__init__(start_position, 100, (255, 255, 255))
 		self.bullets = []
+		self.points = 0
 		self.width = 20
 		self.height = 20
 
