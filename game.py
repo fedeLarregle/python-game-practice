@@ -4,6 +4,7 @@ from collision import *
 from player import Player
 
 from pygame.locals import *
+from utils import TimeUtils
 from vector import Vector
 
 class Game:
@@ -14,8 +15,13 @@ class Game:
 
 	def __init__(self, player):
 		pygame.init()
+		self.level_start_time = 0
+		self.level_start_time_diff = 0
+		self.level_start_delay = 2000
+		self.level = 0
+		self.level_start = False
 		self.game_font = pygame.font.SysFont("monospace", 15)
-		self.enemies = [Enemy(Vector(480 // 2, 50)) for x in range(5)]
+		self.enemies = []
 		self.player = player
 		self.key_z = False
 		self.key_up = False
@@ -30,6 +36,22 @@ class Game:
 		clock = pygame.time.Clock()
 
 		while not done:
+
+			if self.level_start_time == 0 and len(self.enemies) == 0:
+				level_str = self.game_font.render(''.join(["LEVEL: ", str(self.level)]), 3, (255, 255, 255))
+				self.level += 1
+				self.level_start = False
+				self.level_start_time = TimeUtils.millis()
+			else:
+				self.level_start_time_diff = (TimeUtils.millis() - self.level_start_time)
+				if self.level_start_time_diff > self.level_start_delay:
+					self.level_start = True
+					self.level_start_time = 0
+					self.level_start_time_diff = 0
+
+			if self.level_start and len(self.enemies) == 0:
+				level_str = self.game_font.render('', 1, (255, 255, 255))
+				self.enemies = [Enemy(Vector(480 // 2, 50), self.level) for x in range(5 * self.level)]
 
 			for event in pygame.event.get():
 				# I know... we need to do something else than 'sys.exit()' when the player's health goes down to 0...
@@ -121,6 +143,9 @@ class Game:
 				i += 1
 			# remove all the enemies that have a health less or equal to 0
 			self.enemies = [e for e in self.enemies if not e.health <= 0]
+			# writes the level we are currently in
+			main_surface.blit(level_str, (self.SURFACE_WIDTH // 2, self.SURFACE_HEIGHT // 8))
+
 			# player health to be render onto the main_surface
 			health_info = self.game_font.render(''.join(["Player health: ", str(self.player.health)]), 1, (255, 255, 255))
 			main_surface.blit(health_info, (self.SURFACE_WIDTH // 10, self.SURFACE_HEIGHT // 14))
@@ -128,7 +153,7 @@ class Game:
 			points_info = self.game_font.render(''.join(["Player points: ", str(self.player.points)]), 1, (255, 255, 255))
 			main_surface.blit(points_info, ((self.SURFACE_WIDTH // 2) + self.SURFACE_WIDTH // 7, self.SURFACE_HEIGHT // 14))
 			pygame.display.flip()
-			clock.tick(30)
+			clock.tick(40)
 
 player = Player(Vector(480 // 2, 600 // 2))
 game = Game(player)
