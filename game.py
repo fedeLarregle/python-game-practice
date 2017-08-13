@@ -38,7 +38,7 @@ class Game:
 		while not done:
 
 			if self.level_start_time == 0 and len(self.enemies) == 0:
-				level_str = self.game_font.render(''.join(["LEVEL: ", str(self.level)]), 3, (255, 255, 255))
+				level_str = self.game_font.render(''.join(["LEVEL: ", str(self.level + 1)]), 3, (255, 255, 255))
 				self.level += 1
 				self.level_start = False
 				self.level_start_time = TimeUtils.millis()
@@ -115,7 +115,12 @@ class Game:
 				if not Collisions.check_left_wall(self.player):
 					self.player.move_left()
 			if self.key_z:
-				self.player.add_bullet()
+				if self.player.power < 30:
+					self.player.add_bullet(Vector(self.player.position.x, self.player.position.y))
+				else:
+					self.player.add_bullet(Vector(self.player.position.x - 18, self.player.position.y))
+					self.player.add_bullet(Vector(self.player.position.x, self.player.position.y))
+					self.player.add_bullet(Vector(self.player.position.x + 18, self.player.position.y))
 				self.key_z = False
 
 			main_surface.fill(self.BACKGROUND_COLOR)
@@ -124,6 +129,9 @@ class Game:
 				pygame.draw.circle(main_surface, enemy.color, (enemy.position.x, enemy.position.y), enemy.width)
 				enemy.update_position()
 
+			print("Player's points: {}".format(self.player.points))
+			print("Player's power: {}".format(self.player.power))
+			# shoot bullets and render them
 			for b in self.player.bullets:
 				b.shoot()
 				pygame.draw.circle(main_surface, b.color, (b.position.x, b.position.y), b.width)
@@ -138,9 +146,15 @@ class Game:
 				for e in self.enemies:
 					if i < len(self.player.bullets) and Collisions.check_circle_circle_collision(self.player.bullets[i], e):
 						del self.player.bullets[i]
-						e.health -= 10
+						e.health -= self.player.power
 						self.player.points += 10
 				i += 1
+
+			# increise the player's power every 100 points
+			if (self.player.points % 100) == 0 and (self.player.points != 0):
+				self.player.points += 10
+				self.player.level_up()
+
 			# remove all the enemies that have a health less or equal to 0
 			self.enemies = [e for e in self.enemies if not e.health <= 0]
 			# writes the level we are currently in

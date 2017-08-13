@@ -12,9 +12,9 @@ class Enemy(Entity):
 		self.height = 15
 		super(self.__class__, self).__init__(
 			Vector(
-				random.randrange(0 + self.width // 2, 480 - self.width // 2), 
-				random.randrange(0 + self.height, 600 - self.height // 2)
-			), 50 * self.power, (255, 0, 0)
+				random.randrange(0 + self.width, 480 - self.width), 
+				random.randrange(0 + self.height, 600 - self.height)
+			), 100 * self.power, (255, 0, 0)
 		)
 		self.delta_vector = Vector(int(math.cos(math.radians(self.position.x)) * 10) // 2,
 								 int(math.sin(math.radians(self.position.y)) * 10) // 2)

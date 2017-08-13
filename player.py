@@ -4,8 +4,9 @@ from vector import Vector
 
 class Player(Entity):
 
-	def __init__(self, start_position: Vector):
+	def __init__(self, start_position: Vector, power:int = 10):
 		super(self.__class__, self).__init__(start_position, 100, (255, 255, 255))
+		self.power = power
 		self.bullets = []
 		self.points = 0
 		self.width = 20
@@ -27,6 +28,9 @@ class Player(Entity):
 		v2 = Vector(-4, 0)
 		self.position.add(v2)
 
-	def add_bullet(self):
-		self.bullets.append(Bullet(self))
+	def add_bullet(self, position:Vector):
+		self.bullets.append(Bullet(self, position))
+
+	def level_up(self):
+		self.power += 10
 
