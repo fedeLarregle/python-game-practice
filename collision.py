@@ -1,6 +1,6 @@
-from enemy import Enemy
-from entity import Entity
-from player import Player
+# from enemy import Enemy
+from entity import *
+# from player import Player
 
 class Collisions:
 

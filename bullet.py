@@ -1,10 +1,8 @@
-from entity import Entity
 from vector import Vector
 
 class Bullet:
 
-	def __init__(self, entity: Entity, position:Vector):
-		self.entity = entity
+	def __init__(self, position:Vector):
 		self.position = position
 		self.color = (255, 255, 0)
 		self.width = 8

@@ -1,7 +1,7 @@
 import pygame, sys
 from bullet import Bullet
 from collision import *
-from player import Player
+from entity import Player
 
 from pygame.locals import *
 from utils import TimeUtils
