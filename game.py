@@ -83,19 +83,20 @@ class Game:
 						self.key_z = False
 
 			for enemy in self.enemies:
-				# Checking if our enemy is colliding with any wall
-				# in that case we invert the direction of our enemy
-				if Collisions.check_left_wall(enemy):
-					enemy.delta_vector.x = -enemy.delta_vector.x
+				if enemy.movement == "rand":
+					# Checking if our enemy is colliding with any wall
+					# in that case we invert the direction of our enemy
+					if Collisions.check_left_wall(enemy):
+						enemy.delta_vector.x = -enemy.delta_vector.x
 
-				if  Collisions.check_right_wall(enemy, self.SURFACE_WIDTH):
-					enemy.delta_vector.x = -enemy.delta_vector.x
+					if  Collisions.check_right_wall(enemy, self.SURFACE_WIDTH):
+						enemy.delta_vector.x = -enemy.delta_vector.x
 
-				if Collisions.check_bottom_wall(enemy, self.SURFACE_HEIGHT):
-					enemy.delta_vector.y = -enemy.delta_vector.y
+					if Collisions.check_bottom_wall(enemy, self.SURFACE_HEIGHT):
+						enemy.delta_vector.y = -enemy.delta_vector.y
 
-				if Collisions.check_top_wall(enemy):
-					enemy.delta_vector.y = -enemy.delta_vector.y
+					if Collisions.check_top_wall(enemy):
+						enemy.delta_vector.y = -enemy.delta_vector.y
 				# Checking the our player and enemy are colliding
 				if Collisions.check_player_enemy_collision(self.player, enemy):
 					self.player.health -= 1
@@ -129,8 +130,6 @@ class Game:
 				pygame.draw.circle(main_surface, enemy.color, (enemy.position.x, enemy.position.y), enemy.width)
 				enemy.update_position()
 
-			print("Player's points: {}".format(self.player.points))
-			print("Player's power: {}".format(self.player.power))
 			# shoot bullets and render them
 			for b in self.player.bullets:
 				b.shoot()
